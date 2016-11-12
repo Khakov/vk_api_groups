@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>control groups</title>
+</head>
+<body>
+{%for group in groups%}
+    <div>
+    <a href="/{{group.group_id}}">{{group.group_id}}</a>
+    </div>
+{%endfor%}
+<form action="{% url 'VkModule:add_group' %}" method="POST">{% csrf_token %}
+    {{ f.as_p }}
+    <input type="submit" value="добавить группу">
+</form>
+</body>
+</html>

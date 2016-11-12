@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>информация о группе</title>
+</head>
+<body>
+{{ group.group_id }}<br>
+<div style="padding-left: 90%">
+<form action="/{{ group.group_id }}/delete" method="POST">{% csrf_token %}
+    <input type="hidden" name="group_id" value="{{ group.group_id}}">
+    <input style="color: red; background-color: black" type="submit" value="удалить группу">
+</form>
+</div>
+{% if changes%}
+{% for change in changes %}
+    вышли из группы
+    {% for person in change.delete_persons %}
+        <div STYLE="display:inline-block">
+            <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
+        </div>
+    {% endfor %}
+    <br>
+    вошли в группу
+    {% for person in change.new_persons %}
+        <div STYLE="display:inline-block">
+            <a href="vk.com/{{ person }}">{{ person }}</a> ///
+        </div>
+    {% endfor %}
+    {{ change.date }}
+    <br>
+{% endfor %}
+{% endif %}
+<form action="{{ group.group_id }}/change" method="POST">{% csrf_token %}
+    <input type="hidden" name="group_id" value="{{ group.group_id}}">
+    <input type="submit" value="сделать замер">
+</form>
+</body>
+</html>

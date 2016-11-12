@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>добавь группу</title>
+</head>
+<body>
+добавь группу!!!!
+<form action="{% url 'VkModule:add_group' %}" method="POST">{% csrf_token %}
+    {{ f.as_p }}
+    <input type="submit" value="добавить группу">
+</form>
+</body>
+</html>
