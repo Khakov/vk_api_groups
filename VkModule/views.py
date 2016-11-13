@@ -37,7 +37,8 @@ def add_group(request):
 
 def delete_group(request, group_id):
     if request.method == "POST":
-        group = GroupInfo.objects.get(group_id=group_id)
+        groups = GroupInfo.objects.filter(group_id=group_id)
+        group = groups[0]
         changes = ChangeGroup.objects.filter(group=group)
         changes.delete()
         group.delete()
