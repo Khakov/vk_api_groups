@@ -57,7 +57,7 @@ def fix_change(request, group_id):
     if request.method == "GET":
         return redirect(reverse("VkModule:index"))
     elif request.method == "POST":
-        group = GroupInfo.objects.get(group_id=group_id)
+        groups = GroupInfo.objects.filter(group_id=group_id)
         users = group.users
         new_users = set_new_users(group_id)
         change = ChangeGroup()
@@ -69,7 +69,8 @@ def fix_change(request, group_id):
         if len(del_persons) != 0 | len(new_persons) != 0:
             change.date = datetime.today().date()
             change.save()
-            group.users = new_users
+            group = groups[0]
+            group.users = str(new_users)
             group.save()
             print ChangeGroup.objects.all()
         return redirect(reverse("VkModule:group_info", args=(group_id,)))
