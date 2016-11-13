@@ -1,1 +1,1 @@
-web: gunicorn VkApi.wsgi --log-file -
+web: gunicorn VkAPI.wsgi --log-file -
