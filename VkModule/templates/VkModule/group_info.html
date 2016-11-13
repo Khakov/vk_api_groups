@@ -5,7 +5,8 @@
     <title>информация о группе</title>
 </head>
 <body>
-{{ group.group_id }}<br>
+{{ group.group_id }}
+<div style="padding-left: 5%; display:inline-block"><a href="/">&lt&lt;назад</a></div>
 <div style="padding-left: 90%">
 <form action="/{{ group.group_id }}/delete" method="POST">{% csrf_token %}
     <input type="hidden" name="group_id" value="{{ group.group_id}}">
