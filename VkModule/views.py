@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect as redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 import vk
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from VkModule.forms import GroupForm
 from VkModule.models import GroupInfo, ChangeGroup
@@ -79,15 +79,25 @@ def fix_change(request, group_id):
         new_persons = change.new_persons = get_diff(new_users, eval(users))
         first = int(len(del_persons)) > 0
         second = int(len(new_persons)) > 0
-        if group.group_name == "No name":
-            group.group_name = get_group_name(group_id)
-            group.save()
         if first | second:
             change.date = datetime.today().date()
             change.save()
             users1 = str(new_users)
             group.users = users1
             group.save()
+            changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=1))
+            if len(changes) > 1:
+                del_persons = eval(changes[0].delete_persons)
+                new_persons = eval(changes[0].new_persons)
+                for ch in changes:
+                    del_persons.update(eval(ch.delete_persons))
+                    new_persons.update(eval(ch.new_persons))
+                changes.delete()
+                ch = ChangeGroup()
+                ch.delete_persons = get_diff(del_persons, new_persons)
+                ch.new_persons = get_diff(new_persons, del_persons)
+                ch.date = datetime.today().date() - timedelta(days=1)
+                ch.save()
         return redirect(reverse("VkModule:group_info", args=(group_id,)))
 
 
