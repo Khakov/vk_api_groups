@@ -9,7 +9,7 @@ class GroupInfo(models.Model):
         db_table = 'groups'
 
     group_id = models.CharField(max_length=100)
-    group_name = models.TextField(default="No name")
+    group_name = models.TextField(default=group_id)
     users = models.TextField()
 
     def __unicode__(self):
