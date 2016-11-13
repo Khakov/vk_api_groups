@@ -67,14 +67,14 @@ def fix_change(request, group_id):
         change.group = group
         del_persons = change.delete_persons = get_diff(eval(users), new_users)
         new_persons = change.new_persons = get_diff(new_users, eval(users))
-        print len(del_persons)
-        print len(new_persons)
-        if len(del_persons) != 0 | len(new_persons) != 0:
+        first = int(len(del_persons)) > 0
+        second = int(len(new_persons)) > 0
+        if first | second:
             change.date = datetime.today().date()
             change.save()
-            group.users = str(new_users)
+            users1 = str(new_users)
+            group.users = users1
             group.save()
-            print ChangeGroup.objects.all()
         return redirect(reverse("VkModule:group_info", args=(group_id,)))
 
 
@@ -93,7 +93,6 @@ def set_new_users(group_id):
 
 
 def get_diff(users, diff_set):
-    users.difference_update(diff_set)
-    return users
+    return users.difference(diff_set)
 
 # Create your views here.
