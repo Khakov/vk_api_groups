@@ -28,17 +28,21 @@ def add_group(request):
         group.users = str(users)
         if f.is_valid():
             group.group_id = f.cleaned_data["group_id"]
-            session = vk.Session()
-            api = vk.API(session)
-            name = api.groups.getById(group_id=request.POST['group_id'])
-            name = name[0]
-            name = name[u'name']
-            group.group_name = name
+            group.group_name = get_group_name(request.POST['group_id'])
             group.save()
             return redirect(reverse("VkModule:group_info", args=(group.group_id,)))
     else:
         return HttpResponse("405")
     return 0
+
+
+def get_group_name(id):
+    session = vk.Session()
+    api = vk.API(session)
+    name = api.groups.getById(group_id=id)
+    name = name[0]
+    name = name[u'name']
+    return name
 
 
 def delete_group(request, group_id):
@@ -75,6 +79,9 @@ def fix_change(request, group_id):
         new_persons = change.new_persons = get_diff(new_users, eval(users))
         first = int(len(del_persons)) > 0
         second = int(len(new_persons)) > 0
+        if group.group_name == "No name":
+            group.group_name = get_group_name(group_id)
+            group.save()
         if first | second:
             change.date = datetime.today().date()
             change.save()
