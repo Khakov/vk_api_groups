@@ -7,7 +7,7 @@
 <body>
 {%for group in groups%}
     <div>
-    <a href="/{{group.group_id}}">{{group.group_id}}</a>
+    <a href="/{{group.group_id}}">{{group.group_name}}</a>
     </div>
 {%endfor%}
 <form action="{% url 'VkModule:add_group' %}" method="POST">{% csrf_token %}

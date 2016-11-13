@@ -28,6 +28,12 @@ def add_group(request):
         group.users = str(users)
         if f.is_valid():
             group.group_id = f.cleaned_data["group_id"]
+            session = vk.Session()
+            api = vk.API(session)
+            name = api.groups.getById(group_id=request.POST['group_id'])
+            name = name[0]
+            name = name[u'name']
+            group.group_name = name
             group.save()
             return redirect(reverse("VkModule:group_info", args=(group.group_id,)))
     else:
