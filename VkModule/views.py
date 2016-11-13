@@ -45,7 +45,8 @@ def delete_group(request, group_id):
 
 
 def group_info(request, group_id):
-    group = GroupInfo.objects.get(group_id=group_id)
+    groups = GroupInfo.objects.filter(group_id=group_id)
+    group = groups[0]
     changes = ChangeGroup.objects.filter(group=group)
     for change in changes:
         change.delete_persons = eval(change.delete_persons)
