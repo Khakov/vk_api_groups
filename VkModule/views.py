@@ -94,6 +94,7 @@ def fix_change(request, group_id):
                     new_persons.update(eval(ch.new_persons))
                 changes.delete()
                 ch = ChangeGroup()
+                ch.group = group
                 ch.delete_persons = get_diff(del_persons, new_persons)
                 ch.new_persons = get_diff(new_persons, del_persons)
                 ch.date = datetime.today().date() - timedelta(days=1)
