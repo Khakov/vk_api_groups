@@ -62,6 +62,7 @@ def group_info(request, group_id):
     for change in changes:
         change.delete_persons = eval(change.delete_persons)
         change.new_persons = eval(change.new_persons)
+    changes.reverse()
     return render(request, "VkModule/group_info.html", {"changes": changes, "group": group})
 
 
@@ -81,7 +82,6 @@ def fix_change(request, group_id):
         second = int(len(new_persons)) > 0
         if first | second:
             change.date = datetime.today().date()
-            change.save()
             users1 = str(new_users)
             group.users = users1
             group.save()
@@ -99,6 +99,7 @@ def fix_change(request, group_id):
                 ch.new_persons = get_diff(new_persons, del_persons)
                 ch.date = datetime.today().date() - timedelta(days=1)
                 ch.save()
+        change.save()
         return redirect(reverse("VkModule:group_info", args=(group_id,)))
 
 
