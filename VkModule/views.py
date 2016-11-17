@@ -84,7 +84,7 @@ def fix_change(request, group_id):
             if changes != None:
                 changes.delete()
             changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=1))
-            if len(changes) > 1:
+            if len(changes) > 2:
                 del_persons = eval(changes[0].delete_persons)
                 new_persons = eval(changes[0].new_persons)
                 for ch in changes:
