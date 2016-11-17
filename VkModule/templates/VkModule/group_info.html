@@ -1,39 +1,63 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>информация о группе</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"/>
+
 </head>
 <body>
 {{ group.group_name }}
 <div style="padding-left: 5%; display:inline-block"><a href="/">&lt&lt;назад</a></div>
 <div style="padding-left: 90%">
-<form action="/{{ group.group_id }}/delete" method="POST">{% csrf_token %}
-    <input type="hidden" name="group_id" value="{{ group.group_id}}">
-    <input style="color: red; background-color: black" type="submit" value="удалить группу">
-</form>
+    <form action="/{{ group.group_id }}/delete" method="POST">{% csrf_token %}
+        <input type="hidden" name="group_id" value="{{ group.group_id }}">
+        <input style="color: red; background-color: black" type="submit" value="удалить группу">
+    </form>
 </div>
-{% if changes%}
-{% for change in changes %}
-    вышли из группы
-    {% for person in change.delete_persons %}
-        <div STYLE="display:inline-block">
-            <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
-        </div>
-    {% endfor %}
-    <br>
-    вошли в группу
-    {% for person in change.new_persons %}
-        <div STYLE="display:inline-block">
-            <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
-        </div>
-    {% endfor %}
-    {{ change.date }}
-    <br>
-{% endfor %}
+{% if changes %}
+    <table class="table">
+        <tr>
+            <th>событие</th>
+            <th>участники</th>
+            <th>дата</th>
+        </tr>
+        {% for change in changes %}
+            <tr>
+                <td>
+                    вышли из группы
+                </td>
+                <td>
+                    {% for person in change.delete_persons %}
+                        <div STYLE="display:inline-block">
+                            <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
+                        </div>
+                    {% endfor %}
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    вошли в группу
+                </td>
+                <td>
+                    {% for person in change.new_persons %}
+                        <div STYLE="display:inline-block">
+                            <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
+                        </div>
+                    {% endfor %}
+                </td>
+                <td>
+                    {{ change.date }}
+                </td>
+            </tr>
+            <br>
+        {% endfor %}
+    </table>
 {% endif %}
 <form action="{{ group.group_id }}/change" method="POST">{% csrf_token %}
-    <input type="hidden" name="group_id" value="{{ group.group_id}}">
+    <input type="hidden" name="group_id" value="{{ group.group_id }}">
     <input type="submit" value="сделать замер">
 </form>
 </body>

@@ -81,10 +81,9 @@ def fix_change(request, group_id):
         first = int(len(del_persons)) > 0
         second = int(len(new_persons)) > 0
         if first | second:
-            change.date = datetime.today().date()
-            users1 = str(new_users)
-            group.users = users1
-            group.save()
+            changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=3))
+            if changes != None:
+                changes.delete()
             changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=1))
             if len(changes) > 1:
                 del_persons = eval(changes[0].delete_persons)
@@ -99,7 +98,11 @@ def fix_change(request, group_id):
                 ch.new_persons = get_diff(new_persons, del_persons)
                 ch.date = datetime.today().date() - timedelta(days=1)
                 ch.save()
-        change.save()
+            change.date = datetime.today().date()
+            users1 = str(new_users)
+            group.users = users1
+            group.save()
+            change.save()
         return redirect(reverse("VkModule:group_info", args=(group_id,)))
 
 
