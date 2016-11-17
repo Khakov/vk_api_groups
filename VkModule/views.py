@@ -58,10 +58,11 @@ def delete_group(request, group_id):
 def group_info(request, group_id):
     groups = GroupInfo.objects.filter(group_id=group_id)
     group = groups[0]
-    changes = ChangeGroup.objects.filter(group=group)
+    changes = ChangeGroup.objects.filter(group=group).reverse()
     for change in changes:
         change.delete_persons = eval(change.delete_persons)
         change.new_persons = eval(change.new_persons)
+
     return render(request, "VkModule/group_info.html", {"changes": changes, "group": group})
 
 
