@@ -16,42 +16,28 @@
     </form>
 </div>
 {% if changes %}
-{#    <table class="table" style="margin-top: -5%">#}
-{#        <tr>#}
-{#            <th>событие</th>#}
-{#            <th>участники</th>#}
-{#        </tr>#}
+
         {% for change in changes %}
-{#            <tr>#}
-{#                <td>#}
+
                     вышли из группы
-{#                </td>#}
-{#                <td>#}
+
                     {% for person in change.delete_persons %}
                         <div STYLE="display:inline-block">
                             <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
                         </div>
                     {% endfor %}
-{#                </td>#}
-{#                <td></td>#}
-{#            </tr>#}
-{#            <tr>#}
-{#                <td>#}
+
                     вошли в группу
-{#                </td>#}
-{#                <td>#}
+
                     {% for person in change.new_persons %}
                         <div STYLE="display:inline-block">
                             <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
                         </div>
                     {% endfor %}
                     {{ change.date }}
-{#                    <hr>#}
-{#                </td>#}
-{#            </tr>#}
-{#            <br>#}
+
         {% endfor %}
-{#    </table>#}
+
 {% endif %}
 <form action="{{ group.group_id }}/change" method="POST">{% csrf_token %}
     <input type="hidden" name="group_id" value="{{ group.group_id }}">
