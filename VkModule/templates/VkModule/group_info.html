@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
 </head>
 <body>
-{{ group.group_name }}
+{{ group.group_name }} [{{ group.comment}}]
 <div style="padding-left: 5%; display:inline-block"><a href="/">&lt&lt;назад</a></div>
 <div style="padding-left: 90%">
     <form action="/{{ group.group_id }}/delete" method="POST">{% csrf_token %}

@@ -6,4 +6,4 @@ from VkModule.models import GroupInfo
 class GroupForm(ModelForm):
     class Meta:
         model = GroupInfo
-        fields = ["group_id"]
+        fields = ["group_id", "comment"]

@@ -10,6 +10,7 @@ class GroupInfo(models.Model):
 
     group_id = models.CharField(max_length=100)
     group_name = models.TextField(default="No name")
+    comment = models.TextField(default="-")
     users = models.TextField()
 
     def __unicode__(self):
