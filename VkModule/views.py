@@ -59,7 +59,7 @@ def delete_group(request, group_id):
         if request.method == "POST":
             groups = GroupInfo.objects.filter(group_id=group_id)
             group = groups[0]
-            changes = ChangeGroup.objects.filter(group=group)
+            changes = ChangeGroup.objects.filter(group=group).order_by("-date")
             changes.delete()
             group.delete()
         return redirect(reverse("VkModule:index"))
