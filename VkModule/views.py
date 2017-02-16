@@ -8,6 +8,15 @@ from datetime import datetime, timedelta
 from VkModule.forms import GroupForm
 from VkModule.models import GroupInfo, ChangeGroup
 
+def mydecorator(func):
+    def decorate(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            back = "/"
+            if len(args)>1:
+                back += args[1]
+            return render(args[0], "VkModule/error.html", {"back": back})
 
 def main_page(request):
     groups = GroupInfo.objects.all()
@@ -59,7 +68,7 @@ def delete_group(request, group_id):
         if request.method == "POST":
             groups = GroupInfo.objects.filter(group_id=group_id)
             group = groups[0]
-            changes = ChangeGroup.objects.filter(group=group).order_by("-date")
+            changes = ChangeGroup.objects.filter(group=group)
             changes.delete()
             group.delete()
         return redirect(reverse("VkModule:index"))
@@ -72,7 +81,7 @@ def group_info(request, group_id):
     try:
         groups = GroupInfo.objects.filter(group_id=group_id)
         group = groups[0]
-        changes = ChangeGroup.objects.filter(group=group).reverse()
+        changes = ChangeGroup.objects.filter(group=group).order_by("-date")
         for change in changes:
             change.delete_persons = eval(change.delete_persons)
             change.new_persons = eval(change.new_persons)
@@ -97,7 +106,7 @@ def fix_change(request, group_id):
             first = int(len(del_persons)) > 0
             second = int(len(new_persons)) > 0
             if first | second:
-                changes = ChangeGroup.objects.filter(date__lte=datetime.today().date() - timedelta(days=2))
+                changes = ChangeGroup.objects.filter(date__lte=datetime.today().date() - timedelta(days=3))
                 if changes != None:
                     changes.delete()
                 changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=1))
@@ -122,6 +131,7 @@ def fix_change(request, group_id):
             return redirect(reverse("VkModule:group_info", args=(group_id,)))
     except Exception:
         back = '/' + group_id
+        return render(request, "VkModule/error.html", {"back": back})
 
 
 def set_new_users(group_id):
