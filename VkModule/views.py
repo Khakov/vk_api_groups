@@ -123,13 +123,14 @@ def fix_change(request, group_id):
                     ch.new_persons = get_diff(new_persons, del_persons)
                     ch.date = datetime.today().date() - timedelta(days=1)
                     ch.save()
-                change.date = datetime.today().date()
                 users1 = str(new_users)
                 group.users = users1
                 group.save()
+                change.date = datetime.now()
                 change.save()
             return redirect(reverse("VkModule:group_info", args=(group_id,)))
-    except Exception:
+    except Exception as e:
+        print(e.message)
         back = '/' + group_id
         return render(request, "VkModule/error.html", {"back": back})
 

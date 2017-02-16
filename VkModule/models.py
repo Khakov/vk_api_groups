@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import datetime
 from django.db import models
 from django.utils.timezone import now
 
@@ -24,6 +24,6 @@ class ChangeGroup(models.Model):
     delete_persons = models.TextField()
     new_persons = models.TextField()
     group = models.ForeignKey(GroupInfo)
-    date = models.DateField(default=now().date())
+    date = models.DateTimeField()
 
 # Create your models here.
