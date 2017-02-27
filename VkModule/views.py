@@ -106,7 +106,7 @@ def fix_change(request, group_id):
             first = int(len(del_persons)) > 0
             second = int(len(new_persons)) > 0
             if first | second:
-                changes = ChangeGroup.objects.filter(date__lte=datetime.today().date() - timedelta(days=2))
+                changes = ChangeGroup.objects.filter(date__lte=datetime.today().date() - timedelta(days=1))
                 if changes != None:
                     changes.delete()
                 changes = ChangeGroup.objects.filter(date=datetime.today().date() - timedelta(days=1))
