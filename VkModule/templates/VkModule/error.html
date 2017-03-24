@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <title>упс.. что-то пошло не так</title>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"/>
+    <script src="{% static 'js/MyScript.js' %}"></script>
 </head>
 <body>
+<div class="logout" style="margin-left: 80%"><a href="{% url 'VkModule:logout' %}">Выйти</a></div>
 <div style="padding-left: 5%; display:inline-block"><a href="{{ back }}">&lt&lt;назад</a></div>
 <div><img src="{% static 'photo/1.jpg' %}"></div>
 </body>

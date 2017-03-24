@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>control groups</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"/>
+    <script src="{% static 'js/MyScript.js' %}"></script>
 </head>
 <body>
-{%for group in groups%}
+<div class="logout" style="margin-left: 80%"><a href="{% url 'VkModule:logout' %}">Выйти</a></div>
+{% for group in groups %}
     <div>
-    <a href="/{{group.group_id}}">{{group.group_name}}</a> [{{group.comment}}]
+        <a href="/{{ group.group_id }}">{{ group.group_name }}</a> [{{ group.comment }}]
     </div>
-{%endfor%}
-<a href="/group_add"><button>добавить группу</button></a>
+{% endfor %}
+<a href="/group_add">
+    <button>добавить группу</button>
+</a>
 </body>
 </html>
