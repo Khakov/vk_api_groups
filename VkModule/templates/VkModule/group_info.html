@@ -15,7 +15,8 @@
         <input type="hidden" name="group_id" value="{{ group.group_id }}">
         <input style="color: red; background-color: black" type="submit" value="удалить группу">
     </form>
-</div>
+</div><br>
+<a href="{% url 'VkModule:remove_person' %}">Задать логин красного</a>
 <br>
 <div class="logout" style="margin-left: 90%"><a href="{% url 'VkModule:logout' %}">Выйти</a></div>
 {% if changes %}
@@ -35,6 +36,11 @@
                             <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
                         </div>
                     {% endfor %}
+                    {% for person in change.delete_persons_red %}
+                        <div STYLE="display:inline-block">
+                            <a style="color: red" href="https://vk.com/id{{ person }}">{{ person }}</a> ///
+                        </div>
+                    {% endfor %}
                 </td>
             </tr>
             <tr>
@@ -45,6 +51,11 @@
                     {% for person in change.new_persons %}
                         <div STYLE="display:inline-block">
                             <a href="https://vk.com/id{{ person }}">{{ person }}</a> ///
+                        </div>
+                    {% endfor %}
+                    {% for person in change.new_persons_red %}
+                        <div STYLE="display:inline-block; ">
+                            <a style="color: red" href="https://vk.com/id{{ person }}">{{ person }}</a> ///
                         </div>
                     {% endfor %}
                     <br>

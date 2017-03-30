@@ -15,8 +15,9 @@
         <a href="/{{ group.group_id }}">{{ group.group_name }}</a> [{{ group.comment }}]
     </div>
 {% endfor %}
-<a href="/group_add">
+<br><a href="/group_add">
     <button>добавить группу</button>
-</a>
+</a><br>
+<a href="{% url 'VkModule:remove_person' %}">Задать логин красного</a>
 </body>
 </html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>remove person</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}"/>
+    <script src="{% static 'js/MyScript.js' %}"></script>
+</head>
+<body>
+<div class="logout" style="margin-left: 90%"><a href="{% url 'VkModule:logout' %}">Выйти</a></div>
+<div class="input-group" style="margin-left: 30%;">
+    {% if back %}
+        <div style="padding-left: 5%; display:inline-block"><a href="{{ back }}">&lt&lt;назад</a></div>
+    {% endif %}
+    <label>добавить человека</label>
+    <form action="{% url 'VkModule:remove_person' %}" method="POST">{% csrf_token %}
+        {{ f.as_p }}<br><br>
+        <input type="submit" class="btn btn-success" style="margin-left: 40%" value="добавить человека">
+        {% if error %}
+            <div style="color: red">этот человек уже есть в списке</div>
+        {% endif %}
+    </form>
+</body>
+</html>

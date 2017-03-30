@@ -27,4 +27,9 @@ class ChangeGroup(models.Model):
     group = models.ForeignKey(GroupInfo)
     date = models.DateTimeField()
 
+class RemovePerson(models.Model):
+    class Meta():
+        db_table = 'remove_persons'
+
+    remove_person = models.CharField(max_length=100)
 # Create your models here.

@@ -12,8 +12,8 @@ from datetime import datetime, timedelta
 from django.template.context_processors import csrf
 from django.utils import timezone
 
-from VkModule.forms import GroupForm
-from VkModule.models import GroupInfo, ChangeGroup
+from VkModule.forms import GroupForm, RemovePersonForm
+from VkModule.models import GroupInfo, ChangeGroup, RemovePerson
 
 
 def mydecorator(func):
@@ -101,19 +101,30 @@ def delete_group(request, group_id):
 
 @login_required(login_url=reverse_lazy("VkModule:login"))
 def group_info(request, group_id):
-    try:
-        groups = GroupInfo.objects.filter(group_id=group_id)
-        if request.user == groups[0].user:
-            group = groups[0]
-            changes = ChangeGroup.objects.filter(group=group).order_by("-date")
-            for change in changes:
-                change.delete_persons = eval(change.delete_persons)
-                change.new_persons = eval(change.new_persons)
-            return render(request, "VkModule/group_info.html", {"changes": changes, "group": group})
+    # try:
+    groups = GroupInfo.objects.filter(group_id=group_id)
+    if request.user == groups[0].user:
+        group = groups[0]
+        changes = ChangeGroup.objects.filter(group=group).order_by("-date")
+        if (RemovePerson.objects.exists()):
+            delete_persons = set(RemovePerson.objects.all())
         else:
-            return redirect(reverse("VkModule:index"))
-    except Exception:
-        return render(request, "VkModule/error.html", {"back": '/'})
+            delete_persons = set('qwerty');
+        changses = []
+        for change in changes:
+            changs = Changs
+            changs.delete_persons = (eval(change.delete_persons)).intersection(delete_persons)
+            changs.delete_persons_red = (eval(change.delete_persons)).difference(delete_persons)
+            changs.new_persons = (eval(change.new_persons)).intersection(delete_persons)
+            changs.new_persons_red = (eval(change.new_persons)).difference(delete_persons)
+            changs.date = change.date
+            changses.append(changs)
+        return render(request, "VkModule/group_info.html", {"changes": changses, "group": group})
+    else:
+        return redirect(reverse("VkModule:index"))
+        # except Exception:
+        #     return render(request, "VkModule/error.html", {"back": '/'})
+
 
 @login_required(login_url=reverse_lazy("VkModule:login"))
 def fix_change(request, group_id):
@@ -225,3 +236,41 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect(reverse("VkModule:login"))
+
+
+@login_required(login_url=reverse_lazy("VkModule:login"))
+def get_remove_persons(request):
+    pass
+
+
+@login_required(login_url=reverse_lazy("VkModule:login"))
+def remove_person(request):
+    try:
+        if request.method == "GET":
+            f = RemovePersonForm()
+            return render(request, "VkModule/add_remove_person.html", {"f": f})
+        elif request.method == "POST":
+            f = RemovePersonForm(request.POST)
+            if RemovePerson.objects.filter(remove_person=request.POST['remove_person']).exists():
+                return render(request, "VkModule/add_remove_person.html", {"f": f, "back": '/', "error": "1"})
+            else:
+                if f.is_valid():
+                    remove_person = RemovePerson()
+                    remove_person.remove_person = request.POST['remove_person']
+                    remove_person.save()
+                    f = RemovePersonForm()
+                    return render(request, "VkModule/add_remove_person.html", {"f": f, "back": '/'})
+                else:
+                    return render(request, "VkModule/add_remove_person.html", {"f": f})
+        else:
+            return HttpResponse("405")
+    except Exception:
+        return render(request, "VkModule/error.html", {"back": '/remove_person'})
+
+
+class Changs:
+    delete_group = set()
+    delete_group_red = set()
+    new_persons = set()
+    new_persons_red = set()
+    date = ''

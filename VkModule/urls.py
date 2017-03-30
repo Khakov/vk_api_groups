@@ -11,4 +11,6 @@ urlpatterns = [
     url(r'^(?P<group_id>(\w+))/change$', fix_change, name='change_group'),
     url(r'^login/', login, name='login'),
     url(r'^logout/', logout, name='logout'),
+    url(r'^remove_persons/', get_remove_persons, name='remove_persons'),
+    url(r'^remove_person/', remove_person, name='remove_person'),
 ]
