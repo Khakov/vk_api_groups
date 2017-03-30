@@ -101,29 +101,29 @@ def delete_group(request, group_id):
 
 @login_required(login_url=reverse_lazy("VkModule:login"))
 def group_info(request, group_id):
-    # try:
-    groups = GroupInfo.objects.filter(group_id=group_id)
-    if request.user == groups[0].user:
-        group = groups[0]
-        changes = ChangeGroup.objects.filter(group=group).order_by("-date")
-        if (RemovePerson.objects.exists()):
-            delete_persons = set(RemovePerson.objects.all())
+    try:
+        groups = GroupInfo.objects.filter(group_id=group_id)
+        if request.user == groups[0].user:
+            group = groups[0]
+            changes = ChangeGroup.objects.filter(group=group).order_by("-date")
+            if (RemovePerson.objects.exists()):
+                delete_persons = set(RemovePerson.objects.all())
+            else:
+                delete_persons = set('qwerty');
+            changses = []
+            for change in changes:
+                changs = Changs
+                changs.delete_persons = (eval(change.delete_persons)).intersection(delete_persons)
+                changs.delete_persons_red = (eval(change.delete_persons)).difference(delete_persons)
+                changs.new_persons = (eval(change.new_persons)).intersection(delete_persons)
+                changs.new_persons_red = (eval(change.new_persons)).difference(delete_persons)
+                changs.date = change.date
+                changses.append(changs)
+            return render(request, "VkModule/group_info.html", {"changes": changses, "group": group})
         else:
-            delete_persons = set('qwerty');
-        changses = []
-        for change in changes:
-            changs = Changs
-            changs.delete_persons = (eval(change.delete_persons)).intersection(delete_persons)
-            changs.delete_persons_red = (eval(change.delete_persons)).difference(delete_persons)
-            changs.new_persons = (eval(change.new_persons)).intersection(delete_persons)
-            changs.new_persons_red = (eval(change.new_persons)).difference(delete_persons)
-            changs.date = change.date
-            changses.append(changs)
-        return render(request, "VkModule/group_info.html", {"changes": changses, "group": group})
-    else:
-        return redirect(reverse("VkModule:index"))
-        # except Exception:
-        #     return render(request, "VkModule/error.html", {"back": '/'})
+            return redirect(reverse("VkModule:index"))
+    except Exception:
+        return render(request, "VkModule/error.html", {"back": '/'})
 
 
 @login_required(login_url=reverse_lazy("VkModule:login"))
