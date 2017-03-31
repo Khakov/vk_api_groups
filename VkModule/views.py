@@ -115,7 +115,7 @@ def group_info(request, group_id):
                 delete_persons = set('1')
             changses = []
             for change in changes:
-                changs = Changs
+                changs = Changs()
                 changs.delete_persons = (eval(change.delete_persons)).difference(delete_persons)
                 changs.delete_persons_red = (eval(change.delete_persons)).intersection(delete_persons)
                 changs.new_persons = (eval(change.new_persons)).difference(delete_persons)
