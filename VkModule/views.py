@@ -107,16 +107,19 @@ def group_info(request, group_id):
             group = groups[0]
             changes = ChangeGroup.objects.filter(group=group).order_by("-date")
             if (RemovePerson.objects.exists()):
-                delete_persons = set(RemovePerson.objects.all())
+                delete_persons = set()
+                for person in RemovePerson.objects.all():
+                    delete_persons.add(int(person.remove_person.encode('utf-8')))
+                print (delete_persons)
             else:
-                delete_persons = set('qwerty');
+                delete_persons = set('1')
             changses = []
             for change in changes:
                 changs = Changs
-                changs.delete_persons = (eval(change.delete_persons)).intersection(delete_persons)
-                changs.delete_persons_red = (eval(change.delete_persons)).difference(delete_persons)
-                changs.new_persons = (eval(change.new_persons)).intersection(delete_persons)
-                changs.new_persons_red = (eval(change.new_persons)).difference(delete_persons)
+                changs.delete_persons = (eval(change.delete_persons)).difference(delete_persons)
+                changs.delete_persons_red = (eval(change.delete_persons)).intersection(delete_persons)
+                changs.new_persons = (eval(change.new_persons)).difference(delete_persons)
+                changs.new_persons_red = (eval(change.new_persons)).intersection(delete_persons)
                 changs.date = change.date
                 changses.append(changs)
             return render(request, "VkModule/group_info.html", {"changes": changses, "group": group})
