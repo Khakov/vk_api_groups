@@ -15,7 +15,7 @@ class GroupInfo(models.Model):
     users = models.TextField()
 
     def __unicode__(self):
-        return "%s:%s" % (self.group_id, self.users)
+        return "%s:%s" % (self.group_id, self.group_name)
 
 
 class ChangeGroup(models.Model):
@@ -27,9 +27,17 @@ class ChangeGroup(models.Model):
     group = models.ForeignKey(GroupInfo)
     date = models.DateTimeField()
 
+    def __unicode__(self):
+        return "%s: delete:\n%s\n, new: \n%s\n" % (self.group, self.delete_persons, self.new_persons)
+
+
 class RemovePerson(models.Model):
     class Meta():
         db_table = 'remove_persons'
 
     remove_person = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return "%s" % (self.remove_person)
+
 # Create your models here.
