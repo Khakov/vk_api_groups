@@ -6,15 +6,14 @@ from django.http import HttpResponse, HttpResponseRedirect as redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render
-import vk
 from datetime import datetime, timedelta
 
 from django.template.context_processors import csrf
 from django.utils import timezone
 
 from VkModule.forms import GroupForm, RemovePersonForm
-from VkModule.models import GroupInfo, ChangeGroup, RemovePerson
-
+from VkModule.models import ChangeGroup, GroupInfo, RemovePerson
+from VkModule.vk_api_methods import Changs, get_diff, get_user_id_by_unformat_string, set_new_users, get_group_name
 
 def mydecorator(func):
     def decorate(*args, **kwargs):
@@ -72,15 +71,6 @@ def add_group(request):
         return render(request, "VkModule/error.html", {"back": '/'})
 
 
-def get_group_name(id):
-    session = vk.Session()
-    api = vk.API(session)
-    name = api.groups.getById(group_id=id)
-    name = name[0]
-    name = name[u'name']
-    return name
-
-
 @login_required(login_url=reverse_lazy("VkModule:login"))
 def delete_group(request, group_id):
     try:
@@ -110,7 +100,7 @@ def group_info(request, group_id):
                 delete_persons = set()
                 for person in RemovePerson.objects.all():
                     delete_persons.add(int(person.remove_person.encode('utf-8')))
-                print (delete_persons)
+                print(delete_persons)
             else:
                 delete_persons = set('1')
             changses = []
@@ -184,24 +174,6 @@ def fix_change(request, group_id):
         return render(request, "VkModule/error.html", {"back": back})
 
 
-def set_new_users(group_id):
-    session = vk.Session()
-    api = vk.API(session)
-    members = api.groups.getMembers(group_id=group_id)
-    count = int(members[u'count'])
-    users = set(members[u'users'])
-    number = 1000
-    while count - number > 0:
-        members = api.groups.getMembers(group_id=group_id, offset=number)
-        users.update(set(members[u'users']))
-        number += 1000
-    return users
-
-
-def get_diff(users, diff_set):
-    return users.difference(diff_set)
-
-
 def login(request):
     if request.user.is_authenticated():
         return redirect(reverse("VkModule:index"))
@@ -254,26 +226,19 @@ def remove_person(request):
             return render(request, "VkModule/add_remove_person.html", {"f": f})
         elif request.method == "POST":
             f = RemovePersonForm(request.POST)
-            if RemovePerson.objects.filter(remove_person=request.POST['remove_person']).exists():
-                return render(request, "VkModule/add_remove_person.html", {"f": f, "back": '/', "error": "1"})
-            else:
-                if f.is_valid():
+            if f.is_valid():
+                remove_person_id = get_user_id_by_unformat_string(request.POST['remove_person'])
+                if RemovePerson.objects.filter(remove_person=remove_person_id).exists():
+                    return render(request, "VkModule/add_remove_person.html", {"f": f, "back": '/', "error": "1"})
+                else:
                     remove_person = RemovePerson()
-                    remove_person.remove_person = request.POST['remove_person']
+                    remove_person.remove_person = remove_person_id
                     remove_person.save()
                     f = RemovePersonForm()
                     return render(request, "VkModule/add_remove_person.html", {"f": f, "back": '/'})
-                else:
-                    return render(request, "VkModule/add_remove_person.html", {"f": f})
+            else:
+                return render(request, "VkModule/add_remove_person.html", {"f": f})
         else:
             return HttpResponse("405")
     except Exception:
         return render(request, "VkModule/error.html", {"back": '/remove_person'})
-
-
-class Changs:
-    delete_group = set()
-    delete_group_red = set()
-    new_persons = set()
-    new_persons_red = set()
-    date = ''
