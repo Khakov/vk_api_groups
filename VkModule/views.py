@@ -15,7 +15,7 @@ from VkModule.forms import GroupForm, RemovePersonForm
 from VkModule.models import ChangeGroup, GroupInfo, RemovePerson
 from VkModule.vk_api_methods import Changs, get_diff, get_user_id_by_unformat_string, set_new_users, get_group_name
 
-def mydecorator(func):
+def exception_decorate(func):
     def decorate(*args, **kwargs):
         try:
             func(*args, **kwargs)
@@ -24,7 +24,6 @@ def mydecorator(func):
             if len(args) > 1:
                 back += args[1]
             return render(args[0], "VkModule/error.html", {"back": back})
-
 
 @login_required(login_url=reverse_lazy("VkModule:login"))
 def main_page(request):
@@ -143,7 +142,7 @@ def fix_change(request, group_id):
                 time = timezone.make_aware(time, timezone.get_current_timezone())
                 print(time)
                 if first | second:
-                    changes = ChangeGroup.objects.filter(date__lte=time - timedelta(days=1))
+                    changes = ChangeGroup.objects.filter(date__lte=time - timedelta(days=3))
                     if changes != None:
                         changes.delete()
                     changes = ChangeGroup.objects.filter(date=time - timedelta(days=1))
